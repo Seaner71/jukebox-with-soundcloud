@@ -1,0 +1,44 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+
+
+}
+.wrapper {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-column-gap: 1em;
+    grid-row-gap: 1em;
+    grid-auto-rows:  minmax(100px, 100px);
+    grid-auto-columns: minmax(100px, auto);
+  }
+
+.buttons {
+  grid-column: 1;
+  grid-row: 1;
+}
+.artist-div {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+
+.play, .pause {
+  height: 30px;
+  width: 80px;
+}
+img {
+  display: block;
+  height: 100px;
+  width: 100px;
+}
+a {
+  text-decoration: none;
+  color: red;
+}
+.buttons {
+  padding-left: 10px;
+}
+#search-box {
+  height: 28px;  
+}
