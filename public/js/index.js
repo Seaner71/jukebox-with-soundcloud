@@ -54,6 +54,7 @@ const trackTemplate = track => {
   if (track.release === ''){track.release = 'Release Date N/A'}
   if (track.description === ''){track.description = 'Track description not available'}
   return  '<h1>' + track.title + '</h1>' +
+  '<a href="'+ track.permalink_url + '"target=_blank"' +'"/>Song homepage</a>' +
   '<a href="'+ track.artwork_url + '"target=_blank"' +'"/>'+ '<img src="' + track.artwork_url + '"alt="' + track.artwork_url + '"/>' +'</a>'+
   '<li>' + track.description + '</li>' +
   '<li>' + track.genre + '</li>' +
@@ -67,9 +68,8 @@ const buildTrackTemplates = tracks => {
 /* will need to  pass in a target element and move the artistDiv var
   as it stands all tracks are psssed into a sungle div
 */
-const renderTemplate = tracks  => {
-  let artistDiv = document.querySelector('.artist-div');
-  artistDiv.innerHTML = buildTrackTemplates(tracks);
+const renderTemplate = (tracks, target)  => {
+  target.innerHTML = buildTrackTemplates(tracks);
 }
 
 /* psuedo code for an event listener on each track div
@@ -94,7 +94,8 @@ const renderTemplate = tracks  => {
 
 SC.get('/tracks', {q: 'California'}).then(function(tracks) {
       firstTrack = tracks[0];
-      renderTemplate(tracks);
+      const trackList = document.querySelector('.artist-div');
+      renderTemplate(tracks,trackList);
 
 
   SC.stream('/tracks/' + firstTrack.id).then(function(player) {
