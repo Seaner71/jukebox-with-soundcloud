@@ -1,10 +1,10 @@
 var track;
 var trackList;
-var searchBtn;
-var songList;
+
+
 /*
 What works:
-  1. rendering properties and values from array of objects obtained hard coded SC.get search
+  1. rendering properties and values from object obtained hard coded SC.get search
   2. playing and pausing the first element in the array from SC.get
   3. getting search input value and getting it to alert but unable to wrap the SC.get to populate the query with search value
 
@@ -15,6 +15,9 @@ What i want to work:
 
 
 */
+
+
+
 (function (ENV) {
 const client_id = ENV.client_id;
 
@@ -22,6 +25,8 @@ const client_id = ENV.client_id;
 SC.initialize({
 client_id: client_id
 });
+
+
 
 // takes the object passed by SC.stream and calls play() method
 const playTrack = player => {
@@ -32,61 +37,26 @@ const pauseTrack = player => {
   player.pause();
 }
 
-const nextTrack = (songList, currentSong) => {
-  currentSong +=1;
-  console.log(currentSong);
-  return nextPlay = songList[currentSong];
-}
 
-var nextBtn= document.querySelector('.next');
-nextBtn.addEventListener('click',() => nextTrack(songList, currentSong));
 //  attempt at using volume control
 // const setVolume = (player, volume) => {
 //   player.setVolume(volume);
 // }
 
-// variable to store the result of the GET call
-var songList;
-// variable to keep track of the current song
-var currentSong;
-
-const searchSC = ()  => {
-  var searchResult = document.getElementById('search-box').value;
-
-    SC.get('/tracks', {q: searchResult}).then(function(tracks) {
-      firstTrack = tracks[0];
-      const trackList = document.querySelector('.artist-div');
-      renderTemplate(tracks,trackList);
-      songList = tracks.map(x => x.id)
-      console.log(songList)
-      var nextPlay = songList[0]
-      currentSong = songList.indexOf(nextPlay);
-      console.log(currentSong);
-      console.log(songList[currentSong]);
-  SC.stream('/tracks/' + nextPlay).then(function(player) {
-    initEventListeners(player);
-
-  });
-
-});
-}
-var submitBtn= document.getElementById('submit');
-submitBtn.addEventListener('click', searchSC);
 // event listeners for play, pause buttons work- submit on the search and volume not working
-const initEventListeners = (player, tracks) => {
+const initEventListeners = (player) => {
   var playBtn = document.querySelector('.play');
   var pauseBtn = document.querySelector('.pause');
-
+  var volSlider = document.getElementById('volume');
   playBtn.addEventListener('click', () => playTrack(player));
   pauseBtn.addEventListener('click', () => pauseTrack(player));
   // attempted volume control - not very close to functional
-  //  var volSlider = document.getElementById('volume');
   // volSlider.addEventListener('input', () => setVolume(player, volume));
+  var submitBtn= document.getElementById('submit');
+  submitBtn.addEventListener('click', searchSC);
 
-  var nextBtn= document.querySelector('.next');
-  nextBtn.addEventListener('click',() => nextTrack(songList));
 }
-// template to build a single track info -
+// template to build a single track info - INSERT THE IMG IN AN A TAG --DONE
 const trackTemplate = track => {
   if (track.artwork_url === null){track.artwork_url = './img/not-avail.jpg'}
   if (track.release === ''){track.release = 'Release Date N/A'}
@@ -99,12 +69,13 @@ const trackTemplate = track => {
   '<li>' + track.release + '</li>' +
   '<li> Artist homepage : <a href="' + track.user.permalink_url +  '"target="=blank"/>' + track.user.permalink + '</a>'
 }
-// build template ro each item in aarray
+//
 const buildTrackTemplates = tracks => {
     return tracks.map(track => trackTemplate(track));
 }
-
-// render template to target div element - all songs going into one div
+/* will need to  pass in a target element and move the artistDiv var
+  as it stands all tracks are psssed into a sungle div
+*/
 const renderTemplate = (tracks, target)  => {
   target.innerHTML = buildTrackTemplates(tracks);
 }
@@ -123,24 +94,43 @@ const renderTemplate = (tracks, target)  => {
     wrap this function around the SC.get _ WHY CAN'T I DO THIS?!!?!?!!?!?!?!?!?
     */
 
+const searchSC = ()  => {
+  var searchResult = document.getElementById('search-box').value;
+
+    SC.get('/tracks', {q: searchResult}).then(function(tracks) {
+      
+      firstTrack = tracks[0];
+      const trackList = document.querySelector('.artist-div');
+      renderTemplate(tracks,trackList);
+
+
+  SC.stream('/tracks/' + firstTrack.id).then(function(player) {
+    initEventListeners(player);
+
+  });
+
+});
+
+
+ 
+}
 
 
 
-    //
-    // SC.get('/tracks', {q: 'new'}).then(function(tracks) {
-    //
-    //       firstTrack = tracks[0];
-    //       const trackList = document.querySelector('.artist-div');
-    //       renderTemplate(tracks,trackList);
-    //
-    //
-    //   SC.stream('/tracks/' + firstTrack.id).then(function(player) {
-    //     initEventListeners(player);
-    //
-    //   });
-    //
-    // });
-    //
-    //
+
+SC.get('/tracks', {q: 'California'}).then(function(tracks) {
+      
+      firstTrack = tracks[0];
+      const trackList = document.querySelector('.artist-div');
+      renderTemplate(tracks,trackList);
+
+
+  SC.stream('/tracks/' + firstTrack.id).then(function(player) {
+    initEventListeners(player);
+
+  });
+
+});
+
 
 })(ENV)

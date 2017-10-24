@@ -23,7 +23,7 @@
 }
 
 
-.play, .pause {
+.play, .pause, .next {
   height: 30px;
   width: 80px;
 }
@@ -41,4 +41,5 @@ a {
 }
 #search-box {
   height: 28px;
+  display: inline-block;
 }
