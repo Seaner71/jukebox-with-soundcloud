@@ -26,20 +26,17 @@ client_id: client_id
 // takes the object passed by SC.stream and calls play() method
 const playTrack = player => {
   player.play();
+
 }
 // takes the object passed by SC.stream and calls pause() method
 const pauseTrack = player => {
   player.pause();
 }
 
-const nextTrack = (songList, currentSong) => {
-  currentSong +=1;
-  console.log(currentSong);
-  return nextPlay = songList[currentSong];
-}
+var nowPlay = document.querySelector('marquee');
 
 var nextBtn= document.querySelector('.next');
-nextBtn.addEventListener('click',() => nextTrack(songList, currentSong));
+nextBtn.addEventListener('click',() => nextTrack(songList));
 //  attempt at using volume control
 // const setVolume = (player, volume) => {
 //   player.setVolume(volume);
@@ -70,6 +67,24 @@ const searchSC = ()  => {
 
 });
 }
+
+const nextTrack = (songList) => {
+  console.log(currentSong);
+  if (currentSong === songList.length-1) {
+      currentSong = 0;
+  } else {
+  currentSong +=1;
+  }
+  console.log(currentSong)
+  console.log(songList[currentSong]);
+  nextPlay = songList[currentSong];
+  SC.stream('/tracks/' + nextPlay).then(function(player) {
+      initEventListeners(player);
+
+  });
+
+}
+
 var submitBtn= document.getElementById('submit');
 submitBtn.addEventListener('click', searchSC);
 // event listeners for play, pause buttons work- submit on the search and volume not working
@@ -83,8 +98,8 @@ const initEventListeners = (player, tracks) => {
   //  var volSlider = document.getElementById('volume');
   // volSlider.addEventListener('input', () => setVolume(player, volume));
 
-  var nextBtn= document.querySelector('.next');
-  nextBtn.addEventListener('click',() => nextTrack(songList));
+  // var nextBtn= document.querySelector('.next');
+  // nextBtn.addEventListener('click',() => nextTrack(songList));
 }
 // template to build a single track info -
 const trackTemplate = track => {
@@ -97,7 +112,7 @@ const trackTemplate = track => {
   '<li>' + track.description + '</li>' +
   '<li>' + track.genre + '</li>' +
   '<li>' + track.release + '</li>' +
-  '<li> Artist homepage : <a href="' + track.user.permalink_url +  '"target="=blank"/>' + track.user.permalink + '</a>'
+  '<li> Artist homepage : <a href="' + track.user.permalink_url +  '"target="=blank"/>' + track.user.permalink + '</a>' + '<br>'
 }
 // build template ro each item in aarray
 const buildTrackTemplates = tracks => {
